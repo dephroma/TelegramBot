@@ -5,6 +5,11 @@ console.log(process.env.BOT_TOKEN); // Убедитесь, что токен в�
 const { Telegraf } = require('telegraf');
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new Telegraf(BOT_TOKEN);
+if (!bot) {
+    console.error('Bot initialization failed');
+} else {
+    console.log('Bot initialized successfully');
+}
 
 // Функция для обработки webhook
 exports.handler = async (event, context) => {
