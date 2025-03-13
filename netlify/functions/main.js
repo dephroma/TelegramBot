@@ -3,8 +3,6 @@ console.log("Бот запускается...");
 const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 
-require('dotenv').config();
-const { Telegraf } = require('telegraf');
 
 // Загрузка токена из переменных окружения
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -63,11 +61,11 @@ exports.handler = async (event, context) => {
 };
 
 // Если запускаем локально, запускаем бота в режиме polling
-if (process.env.NODE_ENV !== 'production') {
-    bot.launch()
-        .then(() => console.log("Бот запущен в режиме polling"))
-        .catch(err => console.error("Ошибка при запуске бота:", err));
-}
+// if (process.env.NODE_ENV !== 'production') {
+//     bot.launch()
+//         .then(() => console.log("Бот запущен в режиме polling"))
+//         .catch(err => console.error("Ошибка при запуске бота:", err));
+// }
 
 // const { bot, handleWebhook } = require('./webhookHandler');
 
@@ -181,5 +179,3 @@ bot.on('text', async (ctx) => {
         console.error('Ошибка при обработке сообщения:', error);
     }
 });
-
-bot.launch();
