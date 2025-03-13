@@ -29,7 +29,7 @@ const {
 // const connectDB = require('./database');  // Подключение базы
 // const User = require('./userModel');  // Импорт модели пользователя
 
-// exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
+exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
 
 
 // connectDB(); //* Запускаем подключение к БД11
