@@ -1,9 +1,9 @@
 // netlify/functions/webhookHandler.js
 
+require('dotenv').config();
 const { Telegraf } = require('telegraf');
-
-// Замените на ваш токен, который дали в @BotFather
-const bot = new Telegraf('YOUR_BOT_TOKEN');
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const bot = new Telegraf(BOT_TOKEN);
 
 // Функция для обработки webhook
 exports.handler = async (event, context) => {
