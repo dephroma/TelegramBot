@@ -3,7 +3,73 @@ console.log("Бот запускается...");
 const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 
-const { bot, handleWebhook } = require('./webhookHandler');
+require('dotenv').config();
+const { Telegraf } = require('telegraf');
+
+// Загрузка токена из переменных окружения
+const BOT_TOKEN = process.env.BOT_TOKEN;
+if (!BOT_TOKEN) {
+    console.error("Ошибка: BOT_TOKEN не найден в переменных окружения!");
+    process.exit(1);
+}
+
+// Инициализация бота
+const bot = new Telegraf(BOT_TOKEN);
+console.log("Bot initialized successfully");
+
+// URL вебхука
+const WEBHOOK_URL = 'https://tgeagle.netlify.app/.netlify/functions/main';
+
+// Установка вебхука
+bot.telegram.setWebhook(WEBHOOK_URL)
+    .then(() => console.log("Webhook установлен успешно"))
+    .catch(err => console.error("Ошибка при установке вебхука:", err));
+
+// Обработчик команды /start
+bot.start((ctx) => {
+    ctx.reply("Привет! Я ваш бот.");
+});
+
+// Обработчик текстовых сообщений
+bot.on('text', (ctx) => {
+    ctx.reply(`Вы написали: ${ctx.message.text}`);
+});
+
+// Экспорт функции для Netlify
+exports.handler = async (event, context) => {
+    try {
+        // Логируем входящее событие
+        console.log("Получено событие:", event);
+
+        // Парсим тело запроса
+        const body = JSON.parse(event.body);
+        console.log("Parsed body:", body);
+
+        // Передаём обновление в Telegraf
+        await bot.handleUpdate(body);
+
+        // Возвращаем успешный ответ Telegram
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Webhook processed successfully" }),
+        };
+    } catch (error) {
+        console.error("Ошибка при обработке webhook:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error handling webhook" }),
+        };
+    }
+};
+
+// Если запускаем локально, запускаем бота в режиме polling
+if (process.env.NODE_ENV !== 'production') {
+    bot.launch()
+        .then(() => console.log("Бот запущен в режиме polling"))
+        .catch(err => console.error("Ошибка при запуске бота:", err));
+}
+
+// const { bot, handleWebhook } = require('./webhookHandler');
 
 const {
     greetingHandler,
@@ -29,7 +95,7 @@ const {
 // const connectDB = require('./database');  // Подключение базы
 // const User = require('./userModel');  // Импорт модели пользователя
 
-exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
+// exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
 
 
 // connectDB(); //* Запускаем подключение к БД11
