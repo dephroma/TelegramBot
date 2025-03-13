@@ -16,7 +16,7 @@ const bot = new Telegraf(BOT_TOKEN);
 console.log("Bot initialized successfully");
 
 // URL вебхука
-const WEBHOOK_URL = 'https://tgeagle.netlify.app/.netlify/functions/main';
+const WEBHOOK_URL = 'https://telegrambotdag.netlify.app/.netlify/functions/main';
 
 // Установка вебхука
 bot.telegram.setWebhook(WEBHOOK_URL)
