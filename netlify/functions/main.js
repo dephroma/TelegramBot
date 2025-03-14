@@ -23,15 +23,6 @@ bot.telegram.setWebhook(WEBHOOK_URL)
     .then(() => console.log("Webhook установлен успешно"))
     .catch(err => console.error("Ошибка при установке вебхука:", err));
 
-// // Обработчик команды /start
-// bot.start((ctx) => {
-//     ctx.reply("Привет! Я ваш бот.");
-// });
-
-// // Обработчик текстовых сообщений
-// bot.on('text', (ctx) => {
-//     ctx.reply(`Вы написали: ${ctx.message.text}`);
-// });
 
 // Экспорт функции для Netlify
 exports.handler = async (event, context) => {
@@ -60,12 +51,6 @@ exports.handler = async (event, context) => {
     }
 };
 
-// Если запускаем локально, запускаем бота в режиме polling
-// if (process.env.NODE_ENV !== 'production') {
-//     bot.launch()
-//         .then(() => console.log("Бот запущен в режиме polling"))
-//         .catch(err => console.error("Ошибка при запуске бота:", err));
-// }
 
 // const { bot, handleWebhook } = require('./webhookHandler');
 
@@ -90,36 +75,36 @@ const {
     tours 
 } = require('./catalog');
 
-// const connectDB = require('./database');  // Подключение базы
-// const User = require('./userModel');  // Импорт модели пользователя
+const connectDB = require('./database');  // Подключение базы
+const User = require('./userModel');  // Импорт модели пользователя
 
-// exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
+exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
 
 
-// connectDB(); //* Запускаем подключение к БД11
-// (async () => {
-//     let client;
-//     try {
-//       // Подключаемся к базе данных
-//       client = await connectDB();
-//       console.log('База данных готова к работе.');
+connectDB(); //* Запускаем подключение к БД11
+(async () => {
+    let client;
+    try {
+      // Подключаемся к базе данных
+      client = await connectDB();
+      console.log('База данных готова к работе.');
   
-//       // Выполняем операции с базой данных
-//       const db = client.db("sample_mflix");
-//       const users = await db.collection("users").find({}).toArray();
-//       console.log("Пользователи:", users);
+      // Выполняем операции с базой данных
+      const db = client.db("sample_mflix");
+      const users = await db.collection("users").find({}).toArray();
+      console.log("Пользователи:", users);
   
-//     } catch (error) {
-//       console.error('Не удалось подключиться к базе данных:', error.message);
-//       process.exit(1); // Завершаем приложение в случае ошибки
-//     } finally {
-//       // Закрываем соединение
-//       if (client) {
-//         await client.close();
-//         console.log("Соединение с MongoDB закрыто.");
-//       }
-//     }
-// })();
+    } catch (error) {
+      console.error('Не удалось подключиться к базе данных:', error.message);
+      process.exit(1); // Завершаем приложение в случае ошибки
+    } finally {
+      // Закрываем соединение
+      if (client) {
+        await client.close();
+        console.log("Соединение с MongoDB закрыто.");
+      }
+    }
+})();
 
 //! Обработчики кнопок и старт
 bot.start(greetingHandler);
