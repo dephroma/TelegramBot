@@ -1,3 +1,5 @@
+// 
+
 const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 
@@ -35,41 +37,6 @@ const {
 
 const connectDB = require('./database');  // Подключение базы
 const User = require('./userModel');  // Импорт модели пользователя
-
-exports.handler = async (event, context) => {
-    try {
-        // Логируем входящее событие
-        console.log("Получено событие:", event);
-
-        // Если тело запроса пустое
-        if (!event.body) {
-            console.error("Тело запроса пустое");
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: "Empty request body" }),
-            };
-        }
-
-        const body = JSON.parse(event.body);
-        console.log("Parsed body:", body);
-
-        // Передаем обновление в Telegraf
-        await bot.handleUpdate(body);
-
-        // Возвращаем успешный ответ
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "Webhook processed successfully" }),
-        };
-    } catch (error) {
-        console.error("Ошибка при обработке webhook:", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: "Error handling webhook" }),
-        };
-    }
-};
-
 
 // Подключение к базе данных
 connectDB(); 
