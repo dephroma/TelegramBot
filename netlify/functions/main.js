@@ -1,5 +1,3 @@
-// 
-
 const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 

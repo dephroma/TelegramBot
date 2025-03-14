@@ -1,16 +1,16 @@
 require('dotenv').config();
 const { Telegraf } = require('telegraf');
 
+
 // Загрузка токена из переменных окружения
 const BOT_TOKEN = process.env.BOT_TOKEN;
-
 if (!BOT_TOKEN) {
-    console.error("Ошибка: BOT_TOKEN не найден в переменных окружения!");
-    process.exit(1); // Завершаем выполнение, если токен отсутствует
+  console.error("Ошибка: BOT_TOKEN не найден в переменных окружения!");
+  process.exit(1); // Завершаем выполнение, если токен отсутствует
 }
+const bot = new Telegraf(BOT_TOKEN);
 
 console.log("Инициализация бота..."); // Логируем инициализацию бота
-const bot = new Telegraf(BOT_TOKEN);
 
 //! Установка вебхука
 bot.telegram.setWebhook('https://telegrambotdag.netlify.app/.netlify/functions/main')
