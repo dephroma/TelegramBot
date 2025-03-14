@@ -1,7 +1,6 @@
-// const { Markup } = require('telegraf');
 const { Telegraf, Markup } = require('telegraf');
 // const mongoose = require('mongoose');
-// const User = require('./userModel'); // Модель пользователя
+const User = require('./userModel'); // Модель пользователя
 // const { MongoClient } = require('mongodb');
 
 // //! Приветственное сообщение и меню \ 🔙 Назад
