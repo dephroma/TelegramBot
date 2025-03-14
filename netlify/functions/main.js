@@ -25,7 +25,7 @@ bot.telegram.setWebhook(WEBHOOK_URL)
 
 
 // Экспорт функции для Netlify
-exports.handler = async (event, context) => {
+exports.handleWebhook = async (event, context) => {
     try {
         // Логируем входящее событие
         console.log("Получено событие:", event);
@@ -77,9 +77,6 @@ const {
 
 const connectDB = require('./database');  // Подключение базы
 const User = require('./userModel');  // Импорт модели пользователя
-
-// exports.handler = async (event, context) => { return handleWebhook(event, context); };   //* Вызываем обработчик webhook
-
 
 connectDB(); //* Запускаем подключение к БД11
 (async () => {
