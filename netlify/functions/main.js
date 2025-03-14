@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 
 // Импортируем уже инициализированный объект `bot`
-const { bot, handleWebhook } = require('./webhookHandler');
+const { bot } = require('./webhookHandler');
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 if (!BOT_TOKEN) {
