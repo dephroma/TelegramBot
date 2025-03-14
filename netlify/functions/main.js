@@ -23,15 +23,15 @@ bot.telegram.setWebhook(WEBHOOK_URL)
     .then(() => console.log("Webhook установлен успешно"))
     .catch(err => console.error("Ошибка при установке вебхука:", err));
 
-// Обработчик команды /start
-bot.start((ctx) => {
-    ctx.reply("Привет! Я ваш бот.");
-});
+// // Обработчик команды /start
+// bot.start((ctx) => {
+//     ctx.reply("Привет! Я ваш бот.");
+// });
 
-// Обработчик текстовых сообщений
-bot.on('text', (ctx) => {
-    ctx.reply(`Вы написали: ${ctx.message.text}`);
-});
+// // Обработчик текстовых сообщений
+// bot.on('text', (ctx) => {
+//     ctx.reply(`Вы написали: ${ctx.message.text}`);
+// });
 
 // Экспорт функции для Netlify
 exports.handler = async (event, context) => {
