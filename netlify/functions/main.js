@@ -1,58 +1,16 @@
-console.log("Бот запускается...");
-
 const { Telegraf, Markup } = require('telegraf');
 require('dotenv').config();
 
+// Импортируем уже инициализированный объект `bot`
+const { bot, handleWebhook } = require('./webhookHandler');
 
-// Загрузка токена из переменных окружения
 const BOT_TOKEN = process.env.BOT_TOKEN;
 if (!BOT_TOKEN) {
     console.error("Ошибка: BOT_TOKEN не найден в переменных окружения!");
     process.exit(1);
 }
 
-// Инициализация бота
-const bot = new Telegraf(BOT_TOKEN);
 console.log("Bot initialized successfully");
-
-// URL вебхука
-const WEBHOOK_URL = 'https://telegrambotdag.netlify.app/.netlify/functions/main';
-
-// Установка вебхука
-bot.telegram.setWebhook(WEBHOOK_URL)
-    .then(() => console.log("Webhook установлен успешно"))
-    .catch(err => console.error("Ошибка при установке вебхука:", err));
-
-
-// Экспорт функции для Netlify
-exports.handleWebhook = async (event, context) => {
-    try {
-        // Логируем входящее событие
-        console.log("Получено событие:", event);
-
-        // Парсим тело запроса
-        const body = JSON.parse(event.body);
-        console.log("Parsed body:", body);
-
-        // Передаём обновление в Telegraf
-        await bot.handleUpdate(body);
-
-        // Возвращаем успешный ответ Telegram
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: "Webhook processed successfully" }),
-        };
-    } catch (error) {
-        console.error("Ошибка при обработке webhook:", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: "Error handling webhook" }),
-        };
-    }
-};
-
-
-// const { bot, handleWebhook } = require('./webhookHandler');
 
 const {
     greetingHandler,
@@ -78,32 +36,66 @@ const {
 const connectDB = require('./database');  // Подключение базы
 const User = require('./userModel');  // Импорт модели пользователя
 
-connectDB(); //* Запускаем подключение к БД11
+exports.handler = async (event, context) => {
+    try {
+        // Логируем входящее событие
+        console.log("Получено событие:", event);
+
+        // Если тело запроса пустое
+        if (!event.body) {
+            console.error("Тело запроса пустое");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Empty request body" }),
+            };
+        }
+
+        const body = JSON.parse(event.body);
+        console.log("Parsed body:", body);
+
+        // Передаем обновление в Telegraf
+        await bot.handleUpdate(body);
+
+        // Возвращаем успешный ответ
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Webhook processed successfully" }),
+        };
+    } catch (error) {
+        console.error("Ошибка при обработке webhook:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error handling webhook" }),
+        };
+    }
+};
+
+
+// Подключение к базе данных
+connectDB(); 
+
 (async () => {
     let client;
     try {
-      // Подключаемся к базе данных
-      client = await connectDB();
-      console.log('База данных готова к работе.');
-  
-      // Выполняем операции с базой данных
-      const db = client.db("sample_mflix");
-      const users = await db.collection("users").find({}).toArray();
-      console.log("Пользователи:", users);
-  
+        client = await connectDB();
+        console.log('База данных готова к работе.');
+
+        const db = client.db("sample_mflix");
+        const users = await db.collection("users").find({}).toArray();
+        console.log("Пользователи:", users);
+
     } catch (error) {
-      console.error('Не удалось подключиться к базе данных:', error.message);
-      process.exit(1); // Завершаем приложение в случае ошибки
+        console.error('Не удалось подключиться к базе данных:', error.message);
+        process.exit(1);
     } finally {
-      // Закрываем соединение
-      if (client) {
-        await client.close();
-        console.log("Соединение с MongoDB закрыто.");
-      }
+        if (client) {
+            await client.close();
+            console.log("Соединение с MongoDB закрыто.");
+        }
     }
 })();
 
-//! Обработчики кнопок и старт
+// Обработчики кнопок и старт
 bot.start(greetingHandler);
 
 bot.hears(['🔙 Назад', '📅 В главное меню'], greetingHandler);
@@ -121,7 +113,7 @@ bot.hears('❓ Часто задаваемые вопросы', faqHandler2);
 
 bot.action('tour', enterHandler);
 
-// //! Меню команд
+// Меню команд
 bot.telegram.setMyCommands([
     { command: 'start', description: '🏠︎ В начало' },
     { command: 'catalog', description: '📚 Каталог' },
@@ -140,12 +132,12 @@ bot.command('faq', (ctx) => {
     faqHandler(ctx);
 });
 
-// //! Обработчик текстовых сообщений
+// Обработчик текстовых сообщений
 bot.on('text', async (ctx) => {
     try {
         const text = ctx.message.text.trim().toLowerCase();
         console.log('Получено сообщение:', text);
-    //?Regular expressions (регулярные выражения)
+        
         if (/привет/i.test(text) || /здравствуй/i.test(text) || /меню/i.test(text)) {
             await greetingHandler(ctx);}
         else if (/дат/i.test(text) || /цен/i.test(text)) {
@@ -160,4 +152,10 @@ bot.on('text', async (ctx) => {
     } catch (error) {
         console.error('Ошибка при обработке сообщения:', error);
     }
+});
+
+bot.telegram.getMe().then(botInfo => {
+    console.log("Бот подключился! Имя:", botInfo.username);
+}).catch(err => {
+    console.error("Ошибка подключения к Telegram:", err);
 });
